@@ -289,6 +289,7 @@ public class RotationGesture: GestureType {
         rotationGestureHandler = RotationGestureHandler(actionHandler: handler)
         rotationGestureRecognizer = UIRotationGestureRecognizer(target: rotationGestureHandler, action: "handleGestureRecognizer:")
         rotationGestureRecognizer.cancelsTouchesInView = cancelsTouchesInLayer
+        rotationGestureRecognizer.delegate = rotationGestureHandler
     }
     
     private let rotationGestureRecognizer: UIRotationGestureRecognizer
@@ -302,7 +303,7 @@ public class RotationGesture: GestureType {
         rotationGestureRecognizer.removeTarget(rotationGestureHandler, action: "handleGestureRecognizer:")
     }
     
-    @objc class RotationGestureHandler: NSObject {
+    @objc class RotationGestureHandler: NSObject, UIGestureRecognizerDelegate {
         private let actionHandler: (phase: ContinuousGesturePhase, rotationRadians: Double, rotationVelocity: Double, centroidSequence: TouchSequence<Int>) -> ()
         private var centroidSequence: TouchSequence<Int>?
         
@@ -337,6 +338,10 @@ public class RotationGesture: GestureType {
                 break
             }
         }
+
+        func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
     }
 }
 
@@ -361,6 +366,7 @@ public class PinchGesture: GestureType {
         pinchGestureHandler = PinchGestureHandler(actionHandler: handler)
         pinchGestureRecognizer = UIPinchGestureRecognizer(target: pinchGestureHandler, action: "handleGestureRecognizer:")
         pinchGestureRecognizer.cancelsTouchesInView = cancelsTouchesInLayer
+pinchGestureRecognizer.delegate = pinchGestureHandler
     }
     
     private let pinchGestureRecognizer: UIPinchGestureRecognizer
@@ -374,7 +380,7 @@ public class PinchGesture: GestureType {
         pinchGestureRecognizer.removeTarget(pinchGestureHandler, action: "handleGestureRecognizer:")
     }
     
-    @objc class PinchGestureHandler: NSObject {
+    @objc class PinchGestureHandler: NSObject, UIGestureRecognizerDelegate {
         private let actionHandler: (phase: ContinuousGesturePhase, scale: Double, scaleVelocity: Double, centroidSequence: TouchSequence<Int>) -> ()
         private var centroidSequence: TouchSequence<Int>?
         
@@ -408,6 +414,10 @@ public class PinchGesture: GestureType {
             case .Began, .Changed, .Possible, .Failed:
                 break
             }
+        }
+        
+        func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
         }
     }
 }
