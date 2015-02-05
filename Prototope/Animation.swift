@@ -74,6 +74,61 @@ public class LayerAnimatorStore {
 	}
 }
 
+public protocol AnimationKind {
+    func createInstance() -> POPPropertyAnimation
+    func updateAnimation(animation: POPPropertyAnimation)
+}
+
+public struct DecayAnimation<Target: AnimatorValueConvertible> : AnimationKind {
+	public var velocity: Target?
+
+    public init(velocity: Target? = nil) {
+        self.velocity = velocity
+    }
+    
+    public func createInstance() -> POPPropertyAnimation {
+        return POPDecayAnimation()
+    }
+    
+    public func updateAnimation(animation: POPPropertyAnimation) {
+        if let animation = animation as? POPDecayAnimation {
+            if let velocityValue: AnyObject = velocity?.toAnimatorValue() {
+                animation.velocity = velocityValue
+            }
+        }
+    }
+}
+
+public struct SpringAnimation<Target: AnimatorValueConvertible> : AnimationKind {
+	public var velocity: Target?
+
+	/** How quickly the animation resolves to the target value. Valid range from 0 to 20. */
+    public var springSpeed: Double = 4.0
+	/** How springily the animation resolves to the target value. Valid range from 0 to 20. */
+	public var springBounciness: Double = 12.0
+
+    public init(velocity: Target? = nil, springSpeed: Double = 4.0, springBounciness: Double = 12.0) {
+        self.velocity = velocity
+        self.springSpeed = springSpeed
+        self.springBounciness = springBounciness
+    }
+
+    public func createInstance() -> POPPropertyAnimation {
+        return POPSpringAnimation()
+    }
+    
+    public func updateAnimation(animation: POPPropertyAnimation) {
+        if let animation = animation as? POPSpringAnimation {
+            precondition(animation.toValue != nil)
+            animation.springSpeed = CGFloat(springSpeed)
+            animation.springBounciness = CGFloat(springBounciness)
+            if let velocityValue: AnyObject = velocity?.toAnimatorValue() {
+                animation.velocity = velocityValue
+            }
+        }
+    }
+}
+
 // TODO: support decay-type animations too.
 /** See documentation for Layer.animators for more detail on the role of this object. */
 public class Animator<Target: AnimatorValueConvertible> {
@@ -90,21 +145,14 @@ public class Animator<Target: AnimatorValueConvertible> {
 		}
 	}
 
-	/** How quickly the animation resolves to the target value. Valid range from 0 to 20. */
-	public var springSpeed: Double = 4.0 {
-		didSet { updateAnimationCreatingIfNecessary(false) }
-	}
-
-	/** How springily the animation resolves to the target value. Valid range from 0 to 20. */
-	public var springBounciness: Double = 12.0 {
-		didSet { updateAnimationCreatingIfNecessary(false) }
-	}
-
-	/** The instantaneous velocity of the layer, specified in (target type units) per second.
-		For instance, if this animator affects x, the velocity is specified in points per second. */
-	public var velocity: Target? {
-		didSet { updateAnimationCreatingIfNecessary(false) }
-	}
+    public var animationKind: AnimationKind? {
+        didSet {
+            stop()
+            if animationKind != nil {
+                updateAnimationCreatingIfNecessary(true)
+            }
+        }
+    }
 
 	// TODO: This API is not robust. Need to think this through more.
 	/** This function is called whenever the animation resolves to its target value. */
@@ -149,22 +197,20 @@ public class Animator<Target: AnimatorValueConvertible> {
 	}
 
 	private func updateAnimationCreatingIfNecessary(createIfNecessary: Bool) {
-		var animation = animatable()?.pop_animationForKey(property.name) as POPSpringAnimation?
-		if animation == nil && createIfNecessary {
-			animation = POPSpringAnimation()
+		var animation = animatable()?.pop_animationForKey(property.name) as POPPropertyAnimation?
+		if animation == nil && createIfNecessary && self.animationKind != nil {
+			animation = self.animationKind!.createInstance()
 			animation!.delegate = animationDelegate
 			animation!.property = property
 			animatable()?.pop_addAnimation(animation!, forKey: property.name)
 		}
 
 		if let animation = animation {
-			precondition(target != nil)
-			animation.springSpeed = CGFloat(springSpeed)
-			animation.springBounciness = CGFloat(springBounciness)
-			animation.toValue = target?.toAnimatorValue()
-			if let velocityValue: AnyObject = velocity?.toAnimatorValue() {
-				animation.velocity = velocityValue
-			}
+            if let target = target {
+                animation.toValue = target.toAnimatorValue()
+            }
+
+            self.animationKind?.updateAnimation(animation)
 		}
 	}
 }
