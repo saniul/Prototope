@@ -75,26 +75,30 @@ public class LayerAnimatorStore {
 }
 
 public protocol AnimationKind {
-    func createInstance() -> POPPropertyAnimation
-    func updateAnimation(animation: POPPropertyAnimation)
+    func createAnimation() -> POPPropertyAnimation
+    func configureAnimation(animation: POPPropertyAnimation)
 }
 
 public struct DecayAnimation<Target: AnimatorValueConvertible> : AnimationKind {
 	public var velocity: Target?
+    
+    public var deceleration: Double
 
-    public init(velocity: Target? = nil) {
+    public init(velocity: Target? = nil, deceleration: Double = 0.998) {
         self.velocity = velocity
+        self.deceleration = deceleration
     }
     
-    public func createInstance() -> POPPropertyAnimation {
+    public func createAnimation() -> POPPropertyAnimation {
         return POPDecayAnimation()
     }
     
-    public func updateAnimation(animation: POPPropertyAnimation) {
+    public func configureAnimation(animation: POPPropertyAnimation) {
         if let animation = animation as? POPDecayAnimation {
             if let velocityValue: AnyObject = velocity?.toAnimatorValue() {
                 animation.velocity = velocityValue
             }
+            animation.deceleration = CGFloat(deceleration)
         }
     }
 }
@@ -113,11 +117,11 @@ public struct SpringAnimation<Target: AnimatorValueConvertible> : AnimationKind 
         self.springBounciness = springBounciness
     }
 
-    public func createInstance() -> POPPropertyAnimation {
+    public func createAnimation() -> POPPropertyAnimation {
         return POPSpringAnimation()
     }
     
-    public func updateAnimation(animation: POPPropertyAnimation) {
+    public func configureAnimation(animation: POPPropertyAnimation) {
         if let animation = animation as? POPSpringAnimation {
             precondition(animation.toValue != nil)
             animation.springSpeed = CGFloat(springSpeed)
@@ -164,6 +168,15 @@ public class Animator<Target: AnimatorValueConvertible> {
 			}
 		}
 	}
+    
+    public var applyHandler: (() -> Void)? {
+        didSet {
+            animationDelegate.applyHandler = { [weak self] in
+                self?.applyHandler?()
+                ()
+            }
+        }
+    }
 
 	let property: POPAnimatableProperty
 	private weak var layer: Layer?
@@ -199,7 +212,7 @@ public class Animator<Target: AnimatorValueConvertible> {
 	private func updateAnimationCreatingIfNecessary(createIfNecessary: Bool) {
 		var animation = animatable()?.pop_animationForKey(property.name) as POPPropertyAnimation?
 		if animation == nil && createIfNecessary && self.animationKind != nil {
-			animation = self.animationKind!.createInstance()
+			animation = self.animationKind!.createAnimation()
 			animation!.delegate = animationDelegate
 			animation!.property = property
 			animatable()?.pop_addAnimation(animation!, forKey: property.name)
@@ -210,7 +223,7 @@ public class Animator<Target: AnimatorValueConvertible> {
                 animation.toValue = target.toAnimatorValue()
             }
 
-            self.animationKind?.updateAnimation(animation)
+            self.animationKind?.configureAnimation(animation)
 		}
 	}
 }
@@ -260,10 +273,16 @@ extension Layer {
 
 @objc private class AnimationDelegate: NSObject, POPAnimationDelegate {
 	var completionHandler: (() -> Void)?
+    
+    var applyHandler: (() -> Void)?
 
 	func pop_animationDidStop(animation: POPAnimation, finished: Bool) {
 		completionHandler?()
 	}
+    
+    func pop_animationDidApply(animation: POPAnimation) {
+        applyHandler?()
+    }
 }
 
 public protocol AnimatorValueConvertible: _AnimatorValueConvertible {}
