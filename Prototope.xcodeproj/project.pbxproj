@@ -12,6 +12,8 @@
 		752064901A89E3A0005E38A2 /* Behaviors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520648F1A89E39F005E38A2 /* Behaviors.swift */; };
 		753E20E81A84A12100E30460 /* JSTest.js in Resources */ = {isa = PBXBuildFile; fileRef = 753E20E71A84A12100E30460 /* JSTest.js */; };
 		75A02AF01A8C95AC00938B4E /* BehaviorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */; };
+		75FF959C1A92E974002C5F1A /* EmojiLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 756BF1C21A92D7A7003A3AB1 /* EmojiLayer.swift */; };
+		75FF959D1A92E97C002C5F1A /* EmojiLayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750ED0AF1A92E6AD006B71FD /* EmojiLayerBridge.swift */; };
 		9619D3AC1A8E56F20022DC54 /* Layer+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */; };
 		961AC2061A93B9D500ED9744 /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961AC2051A93B9D500ED9744 /* Speech.swift */; };
 		961AC2151A93D45D00ED9744 /* SpeechBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961AC2141A93D45D00ED9744 /* SpeechBridge.swift */; };
@@ -407,8 +409,10 @@
 /* Begin PBXFileReference section */
 		6175CE281A7F1B01001E63CE /* BridgeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BridgeType.swift; sourceTree = "<group>"; };
 		6175CE2A1A7F1B71001E63CE /* ColorBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorBridge.swift; sourceTree = "<group>"; };
+		750ED0AF1A92E6AD006B71FD /* EmojiLayerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiLayerBridge.swift; sourceTree = "<group>"; };
 		7520648F1A89E39F005E38A2 /* Behaviors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Behaviors.swift; sourceTree = "<group>"; };
 		753E20E71A84A12100E30460 /* JSTest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSTest.js; sourceTree = "<group>"; };
+		756BF1C21A92D7A7003A3AB1 /* EmojiLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiLayer.swift; sourceTree = "<group>"; };
 		75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BehaviorBridge.swift; sourceTree = "<group>"; };
 		9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Layer+Layout.swift"; sourceTree = "<group>"; };
 		961AC2051A93B9D500ED9744 /* Speech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
@@ -787,6 +791,7 @@
 				9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */,
 				EBD43A9E1A9186F900BB2E6A /* TextLayer.swift */,
 				961AC2051A93B9D500ED9744 /* Speech.swift */,
+				756BF1C21A92D7A7003A3AB1 /* EmojiLayer.swift */,
 				9EC148211A20FB1C004C7129 /* ThirdParty */,
 				EBB3505D1A166E5E0046AD07 /* Utilities */,
 				EBE3A75819DF79C400A77736 /* Supporting Files */,
@@ -1012,6 +1017,7 @@
 				9632F6621A8D4CD3003D386B /* ScrollLayerBridge.swift */,
 				EBD43AAD1A918A8200BB2E6A /* TextLayerBridge.swift */,
 				961AC2141A93D45D00ED9744 /* SpeechBridge.swift */,
+				750ED0AF1A92E6AD006B71FD /* EmojiLayerBridge.swift */,
 			);
 			name = "Bridged Types";
 			sourceTree = "<group>";
@@ -1524,6 +1530,7 @@
 				6175CE291A7F1B01001E63CE /* BridgeType.swift in Sources */,
 				EBC43D881A81C47A0075272A /* SoundBridge.swift in Sources */,
 				EBC43D781A81999B0075272A /* JSContext+BridgingExtensions.swift in Sources */,
+				75FF959D1A92E97C002C5F1A /* EmojiLayerBridge.swift in Sources */,
 				EBC43D621A8007320075272A /* ShadowBridge.swift in Sources */,
 				EBD43AAF1A918A8900BB2E6A /* TextLayerBridge.swift in Sources */,
 				EBC43D641A8010770075272A /* ImageBridge.swift in Sources */,
@@ -1641,6 +1648,7 @@
 				EBB3505F1A166E690046AD07 /* Dictionary+Extensions.swift in Sources */,
 				EB05D2AA1A8823F200F4CFD4 /* Environment.swift in Sources */,
 				EBABE67D19E4AEF100483EEF /* Geometry.swift in Sources */,
+				75FF959C1A92E974002C5F1A /* EmojiLayer.swift in Sources */,
 				EBB565DB19F074B000D93DE3 /* Math.swift in Sources */,
 				CD26ECC61A83CE1000E8EC3B /* Radian.swift in Sources */,
 				9619D3AC1A8E56F20022DC54 /* Layer+Layout.swift in Sources */,
