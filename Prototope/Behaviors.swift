@@ -161,24 +161,24 @@ class ActionBehaviorBinding : BehaviorBinding {
 
 /** Manages all the behaviors in a given Environment */
 class BehaviorDriver {
-    var heartbeat: Heartbeat!
-    
+    var heartbeat: Heartbeat?
+
     var registeredBindings: Set<BehaviorBinding> {
+        willSet {
+            if newValue.count > 0 && self.heartbeat == nil {
+                self.heartbeat = Heartbeat { [unowned self] _ in
+                    self.tick()
+                }
+            }
+        }
+        
         didSet {
-            self.heartbeat.paused = self.registeredBindings.count == 0
+            self.heartbeat?.paused = self.registeredBindings.count == 0
         }
     }
     
     init() {
         self.registeredBindings = Set<BehaviorBinding>()
-        
-        self.heartbeat = Heartbeat { [unowned self] _ in
-            self.tick()
-        }
-    }
-    
-    deinit {
-        self.heartbeat.stop()
     }
     
     func tick() {

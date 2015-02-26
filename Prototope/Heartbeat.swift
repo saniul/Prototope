@@ -8,6 +8,22 @@
 
 import QuartzCore
 
+/** Holds references to all active `Heartbeat`s. */
+class Heart {
+    var registeredHeartbeats = [Heartbeat]()
+    
+    func registerHeartbeat(heartbeat: Heartbeat) {
+        registeredHeartbeats.append(heartbeat)
+    }
+    
+    deinit {
+        for heartbeat in registeredHeartbeats {
+            heartbeat.stop()
+        }
+    }
+    
+}
+
 /** Allows you to run code once for every frame the display will render. */
 public class Heartbeat {
 	/** The heartbeat's handler won't be called when paused is true. Defaults to false. */
@@ -27,6 +43,11 @@ public class Heartbeat {
 	public init(handler: Heartbeat -> ()) {
 		self.handler = handler
 		displayLink = CADisplayLink(target: self, selector: "handleDisplayLink:")
+        
+        //If the current environment is nil then we're doing something wrong, so
+        //this should just fail
+        Environment.currentEnvironment!.heart.registerHeartbeat(self)
+        
 		displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
 	}
 

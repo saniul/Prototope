@@ -23,6 +23,9 @@ class SessionInteractor {
 
 	func displayPrototype(prototype: Prototype, rootView: UIView) {
 		Prototope.Layer.root?.removeAllSublayers()
+        // nil this out first, just in case we're referencing the current environment
+        // when initializing the new environment
+        Prototope.Environment.currentEnvironment = nil
 		Prototope.Environment.currentEnvironment = Environment(
 			rootView: rootView,
 			imageProvider: { name in

@@ -13,6 +13,7 @@ public struct Environment {
 	public let rootLayer: Layer
 	public let imageProvider: String -> UIImage?
 	public let soundProvider: String -> NSData?
+    let heart: Heart
     let behaviorDriver: BehaviorDriver
 
 	public static var currentEnvironment: Environment?
@@ -28,6 +29,7 @@ public struct Environment {
 
 		self.imageProvider = imageProvider
 		self.soundProvider = soundProvider
+        self.heart = Heart()
         self.behaviorDriver = BehaviorDriver()
 	}
 
