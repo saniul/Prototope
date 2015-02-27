@@ -33,11 +33,15 @@ import JavaScriptCore
 					handler.callWithArguments([strongSelf])
 				}
 			}
-			JSContext.currentContext().virtualMachine.addManagedReference(self, withOwner: self)
+//			JSContext.currentContext().virtualMachine.addManagedReference(self, withOwner: self)
 		} else {
 			return nil
 		}
 	}
+    
+    deinit {
+        println("HeartbeatBridge killed")
+    }
 
 	public var paused: Bool {
 		get { return heartbeat.paused }
