@@ -29,6 +29,10 @@ public class Context {
 		context = JSContext(virtualMachine: vm)
 		addBridgedTypes()
 	}
+    
+    deinit {
+        println("killed Context")
+    }
 
 	public func evaluateScript(script: String!) -> JSValue {
 		return context.evaluateScript(script)

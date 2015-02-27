@@ -173,6 +173,10 @@ import Prototope
 		self.rect = rect
 		super.init()
 	}
+    
+    deinit {
+        println("killed RectBridge")
+    }
 
 	public var origin: PointJSExport { return PointBridge(rect.origin) }
 	public var size: SizeJSExport { return SizeBridge(rect.size) }
