@@ -27,13 +27,15 @@ import JavaScriptCore
 	required public init?(args: JSValue) {
 		super.init()
 		let handler = args.objectForKeyedSubscript("handler")
+        
+        Environment.currentEnvironment?.associatedObjects.addObject(handler)
+        
 		if !handler.isUndefined() {
-			heartbeat = Heartbeat { [weak self] heartbeat in
-				if let strongSelf = self {
-					handler.callWithArguments([strongSelf])
+			heartbeat = Heartbeat { [weak self, weak handler] heartbeat in
+				if let strongSelf = self, let strongHandler = handler {
+					strongHandler.callWithArguments([strongSelf])
 				}
 			}
-//			JSContext.currentContext().virtualMachine.addManagedReference(self, withOwner: self)
 		} else {
 			return nil
 		}
@@ -54,6 +56,5 @@ import JavaScriptCore
 
 	public func stop() {
 		heartbeat.stop()
-		JSContext.currentContext().virtualMachine.removeManagedReference(self, withOwner: self)
 	}
 }

@@ -389,8 +389,13 @@ import JavaScriptCore
 		}
         set {
             if let callable = newValue {
-                layer.touchesBeganHandler = { [context = JSContext.currentContext()] sequenceMapping in
-                    return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchesBeganHandler = { [weak callable] sequenceMapping in
+                    if let callable = callable, let context = callable.context {
+                        return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                    }
+                    return false;
                 }
             } else {
                 layer.touchesBeganHandler = nil
@@ -408,8 +413,13 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchesMovedHandler = { [context = JSContext.currentContext()] sequenceMapping in
-                    return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchesMovedHandler = { [weak callable] sequenceMapping in
+                    if let callable = callable, let context = callable.context {
+                        return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                    }
+                    return false;
                 }
             } else {
                 layer.touchesMovedHandler = nil
@@ -427,8 +437,13 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchesEndedHandler = { [context = JSContext.currentContext()] sequenceMapping in
-                    return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchesEndedHandler = { [weak callable] sequenceMapping in
+                    if let callable = callable, let context = callable.context {
+                        return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                    }
+                    return false;
                 }
             } else {
                 layer.touchesEndedHandler = nil
@@ -446,8 +461,13 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchesCancelledHandler = { [context = JSContext.currentContext()] sequenceMapping in
-                    return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchesCancelledHandler = { [weak callable] sequenceMapping in
+                    if let callable = callable, let context = callable.context {
+                        return callable.callWithArguments([LayerBridge.bridgeTouchSequenceMapping(sequenceMapping, context: context)]).toBool()
+                    }
+                    return false;
                 }
             } else {
                 layer.touchesCancelledHandler = nil
@@ -464,10 +484,13 @@ import JavaScriptCore
             }
         }
         set {
-            if let callable = newValue {
-                layer.touchBeganHandler = { [context = JSContext.currentContext()] sequence in
-                    callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
-                    return
+            if let callable = newValue  {
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchBeganHandler = { [weak callable] sequence in
+                    if let callable = callable, let context = callable.context {
+                        callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
+                    }
                 }
             } else {
                 layer.touchBeganHandler = nil
@@ -485,9 +508,12 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchMovedHandler = { [context = JSContext.currentContext()] sequence in
-                    callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
-                    return
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchMovedHandler = { [weak callable] sequence in
+                    if let callable = callable, let context = callable.context {
+                        callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
+                    }
                 }
             } else {
                 layer.touchMovedHandler = nil
@@ -505,9 +531,12 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchEndedHandler = { [context = JSContext.currentContext()] sequence in
-                    callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
-                    return
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchEndedHandler = { [weak callable] sequence in
+                    if let callable = callable, let context = callable.context {
+                        callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
+                    }
                 }
             } else {
                 layer.touchEndedHandler = nil
@@ -525,9 +554,12 @@ import JavaScriptCore
         }
         set {
             if let callable = newValue {
-                layer.touchCancelledHandler = { [context = JSContext.currentContext()] sequence in
-                    callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
-                    return
+                Environment.currentEnvironment?.associatedObjects.addObject(callable)
+                
+                layer.touchCancelledHandler = { [weak callable] sequence in
+                    if let callable = callable, let context = callable.context {
+                        callable.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
+                    }
                 }
             } else {
                 layer.touchCancelledHandler = nil
