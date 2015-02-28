@@ -8,6 +8,7 @@
 
 import Foundation
 import JavaScriptCore
+import Prototope
 
 public class Context {
 	public var exceptionHandler: (JSValue -> Void)? {
@@ -29,6 +30,22 @@ public class Context {
 		context = JSContext(virtualMachine: vm)
 		addBridgedTypes()
 	}
+    
+    public func tearDown() {
+        println("tearing down Context")
+        println("clearing root LayerBridge")
+        Layer.root.removeAllSublayers()
+        LayerBridge.root.removeAllSublayers()
+        let success = self.context.globalObject.objectForKeyedSubscript("Layer").deleteProperty("root")
+        println("killing Layer.root -> \(success)")
+        println("clearing root Layer")
+        
+        for key in self.context.globalObject.toDictionary().keys.array {
+            let success = self.context.globalObject.deleteProperty(key as! String)
+            self.context.setObject(NSNull(), forKeyedSubscript: key as! String)
+            println("\tdeleting global.\(key) -> \(success)")
+        }
+    }
     
     deinit {
         println("killed Context")

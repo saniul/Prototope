@@ -27,15 +27,12 @@ import JavaScriptCore
 	required public init?(args: JSValue) {
 		super.init()
 		let handler = args.objectForKeyedSubscript("handler")
-        
-        Environment.currentEnvironment?.associatedObjects.addObject(handler)
-        
 		if !handler.isUndefined() {
-			heartbeat = Heartbeat { [weak self, weak handler] heartbeat in
-				if let strongSelf = self, let strongHandler = handler {
-					strongHandler.callWithArguments([strongSelf])
-				}
-			}
+//			heartbeat = Heartbeat { [weak self] heartbeat in
+//				if let strongSelf = self {
+//					handler.callWithArguments([strongSelf])
+//				}
+//			}
 		} else {
 			return nil
 		}

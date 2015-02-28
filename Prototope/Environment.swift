@@ -15,7 +15,6 @@ public struct Environment {
 	public let soundProvider: String -> NSData?
     let heart: Heart
     let behaviorDriver: BehaviorDriver
-    public let associatedObjects = NSMutableArray()
 
 	public static var currentEnvironment: Environment?
 

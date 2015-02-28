@@ -718,6 +718,10 @@ public class Layer: Equatable, Hashable {
             Environment.currentEnvironment?.behaviorDriver.updateWithLayer(self, behaviors: behaviors)
         }
     }
+    
+    deinit {
+        println("killed Layer")
+    }
 }
 
 extension Layer: Hashable {
