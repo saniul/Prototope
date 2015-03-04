@@ -34,7 +34,9 @@ public class Context {
 		}
 	}
 
-	public var consoleLogHandler: (String -> Void)?
+    public var consoleLogHandler: (String -> Void)? = { str in
+        println(str)
+    }
 
 	private let vm = JSVirtualMachine()
 	private let context: JSContext
@@ -65,7 +67,7 @@ public class Context {
     }
 
 	public func evaluateScript(script: String!) -> JSValue {
-		return context.evaluateScript(script)
+		return context.evaluateScript("\"use strict\";" + script)
 	}
 
 	private func addBridgedTypes() {

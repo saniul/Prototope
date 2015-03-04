@@ -42,7 +42,7 @@ touchLayer.touchBeganHandler = function(touchSequence) {
 
 
 //new Heartbeat({handler: function() {
-//	for (layer in touchLayers) {
+//	for (var layer in touchLayers) {
 //		touchLayers[layer].scale *= 1.11
 //	}
 //}})
