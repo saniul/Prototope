@@ -78,5 +78,6 @@ public class Context {
 		TextLayerBridge.addToContext(context)
 		SpeechBridge.addToContext(context)
 		TextAlignmentBridge.addToContext(context)
+        DeviceAttitudeObserverBridge.addToContext(context)
 	}
 }

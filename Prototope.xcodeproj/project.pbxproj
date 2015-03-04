@@ -12,6 +12,7 @@
 		752064901A89E3A0005E38A2 /* Behaviors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520648F1A89E39F005E38A2 /* Behaviors.swift */; };
 		75239A611A9DBABA00FE8F04 /* DeviceMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75239A601A9DBABA00FE8F04 /* DeviceMotion.swift */; };
 		753E20E81A84A12100E30460 /* JSTest.js in Resources */ = {isa = PBXBuildFile; fileRef = 753E20E71A84A12100E30460 /* JSTest.js */; };
+		759508381AA175290089E32C /* DeviceAttitudeObserverBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759508371AA175290089E32C /* DeviceAttitudeObserverBridge.swift */; };
 		75A02AF01A8C95AC00938B4E /* BehaviorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */; };
 		9619D3AC1A8E56F20022DC54 /* Layer+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */; };
 		961AC2061A93B9D500ED9744 /* Speech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961AC2051A93B9D500ED9744 /* Speech.swift */; };
@@ -411,6 +412,7 @@
 		7520648F1A89E39F005E38A2 /* Behaviors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Behaviors.swift; sourceTree = "<group>"; };
 		75239A601A9DBABA00FE8F04 /* DeviceMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMotion.swift; sourceTree = "<group>"; };
 		753E20E71A84A12100E30460 /* JSTest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSTest.js; sourceTree = "<group>"; };
+		759508371AA175290089E32C /* DeviceAttitudeObserverBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceAttitudeObserverBridge.swift; sourceTree = "<group>"; };
 		75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BehaviorBridge.swift; sourceTree = "<group>"; };
 		9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Layer+Layout.swift"; sourceTree = "<group>"; };
 		961AC2051A93B9D500ED9744 /* Speech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Speech.swift; sourceTree = "<group>"; };
@@ -996,6 +998,7 @@
 			children = (
 				EB453DB11A7AB116006F2A72 /* LayerBridge.swift */,
 				EBC43D661A8042740075272A /* GeometryBridge.swift */,
+				759508371AA175290089E32C /* DeviceAttitudeObserverBridge.swift */,
 				EBC43D5C1A7FF8920075272A /* BorderBridge.swift */,
 				EBC43D611A8007320075272A /* ShadowBridge.swift */,
 				EBC43D751A8198EA0075272A /* TunableBridge.swift */,
@@ -1520,6 +1523,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EBC43D5D1A7FF8920075272A /* BorderBridge.swift in Sources */,
+				759508381AA175290089E32C /* DeviceAttitudeObserverBridge.swift in Sources */,
 				EBC43D761A8198EA0075272A /* TunableBridge.swift in Sources */,
 				961AC2151A93D45D00ED9744 /* SpeechBridge.swift in Sources */,
 				EBB43C981A8BEB2200CE943C /* VideoLayerBridge.swift in Sources */,
