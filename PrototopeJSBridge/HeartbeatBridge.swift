@@ -28,9 +28,11 @@ import JavaScriptCore
 		super.init()
 		let handler = args.objectForKeyedSubscript("handler")
 		if !handler.isUndefined() {
+//            let managedCallable = JSManagedValue(value: handler, andOwner: self)
+            
 //			heartbeat = Heartbeat { [weak self] heartbeat in
 //				if let strongSelf = self {
-//					handler.callWithArguments([strongSelf])
+//					managedCallable.value?.callWithArguments([strongSelf])
 //				}
 //			}
 		} else {

@@ -10,6 +10,19 @@ import Foundation
 import JavaScriptCore
 import Prototope
 
+@objc public class WeakContextRef: NSObject, JSExport {
+    
+    init(context: Context) {
+        self.context = context
+    }
+    
+    public weak var context: Context?
+    
+    deinit {
+        println("killed weak ctx")
+    }
+}
+
 public class Context {
 	public var exceptionHandler: (JSValue -> Void)? {
 		didSet {
@@ -63,6 +76,9 @@ public class Context {
 		}
 		console.setFunctionForKey("log", fn: loggingTrampoline)
 		context.setObject(console, forKeyedSubscript: "console")
+        
+        let weakRef = WeakContextRef(context: self)
+        context.setObject(weakRef, forKeyedSubscript: "weakContext")
 
 		LayerBridge.addToContext(context)
 		ColorBridge.addToContext(context)

@@ -15,6 +15,7 @@ public struct Environment {
 	public let soundProvider: String -> NSData?
     let heart: Heart
     let behaviorDriver: BehaviorDriver
+    public let bag: NSObject
 
 	public static var currentEnvironment: Environment?
 
@@ -31,6 +32,7 @@ public struct Environment {
 		self.soundProvider = soundProvider
         self.heart = Heart()
         self.behaviorDriver = BehaviorDriver()
+        self.bag = NSObject()
 	}
 
 	public static func runWithEnvironment(environment: Environment, action: () -> Void) {
