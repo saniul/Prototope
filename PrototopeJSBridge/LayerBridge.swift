@@ -502,7 +502,18 @@ import JavaScriptCore
                 
                 layer.touchBeganHandler = { sequence in
                     if let context = managedCallable.value?.context {
-                        managedCallable?.value.callWithArguments([LayerBridge.bridgeTouchSequence(sequence, context: context)])
+                        var args = [LayerBridge.bridgeTouchSequence(sequence, context: context)]
+                        
+                        // (Color Puddles prototype)
+                        // if this line stays commented, the object graph will not be
+                        // cleaned up properly if you touch the view, even though NOTHING
+                        // is happening.
+                        //
+                        // If you uncomment this line – everything will be cleaned up
+                        // properly.
+                        //args = nil
+                        
+                        managedCallable?.value.callWithArguments(args)
                     }
                 }
             } else {
