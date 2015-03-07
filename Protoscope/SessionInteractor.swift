@@ -53,6 +53,10 @@ class SessionInteractor {
 					}
 				}
 				return nil
+			},
+			exceptionHandler: { [weak self] exception in
+				self?.exceptionHandler(exception)
+				return
 			}
 		)
 

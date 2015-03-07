@@ -13,13 +13,14 @@ public struct Environment {
 	public let rootLayer: Layer
 	public let imageProvider: String -> UIImage?
 	public let soundProvider: String -> NSData?
+	public let exceptionHandler: String -> Void
     let heart: Heart
     let behaviorDriver: BehaviorDriver
     public let bag: NSObject
 
 	public static var currentEnvironment: Environment?
 
-	public init(rootView: UIView, imageProvider: String -> UIImage?, soundProvider: String -> NSData?) {
+	public init(rootView: UIView, imageProvider: String -> UIImage?, soundProvider: String -> NSData?, exceptionHandler: String -> Void) {
 		self.rootLayer = Layer(hostingView: rootView, name: "Root")
 
 		// TODO: move defaultSpec into Environment.
@@ -30,6 +31,7 @@ public struct Environment {
 
 		self.imageProvider = imageProvider
 		self.soundProvider = soundProvider
+		self.exceptionHandler = exceptionHandler
         self.heart = Heart()
         self.behaviorDriver = BehaviorDriver()
         self.bag = NSObject()
@@ -52,6 +54,9 @@ public struct Environment {
 					}
 				}
 				return nil
+			},
+			exceptionHandler: { exception in
+				fatalError("Prototope exception: \(exception)")
 			}
 		)
 	}
