@@ -53,6 +53,33 @@ public struct Color {
 	init(_ uiColor: UIColor) {
 		self.uiColor = uiColor
 	}
+    
+    public func getRGBAValues() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        let colorSpace = CGColorGetColorSpace(self.uiColor.CGColor);
+        let colorSpaceModel = CGColorSpaceGetModel(colorSpace);
+        
+        var r = 0 as CGFloat
+        var g = 0 as CGFloat
+        var b = 0 as CGFloat
+        var a = 0 as CGFloat
+        
+        switch colorSpaceModel.value {
+
+        case kCGColorSpaceModelMonochrome.value:
+            var w = 0 as CGFloat
+            self.uiColor.getWhite(&w, alpha: &a)
+            r = w
+            g = w
+            b = w
+        case kCGColorSpaceModelRGB.value:
+            self.uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+            
+        default:
+            fatalError("unsupported color space for color: \(self)")
+        }
+        
+        return (r, g, b, a)
+    }
 
 	public static var black: Color { return Color(UIColor.blackColor()) }
 	public static var darkGray: Color { return Color(UIColor.darkGrayColor()) }

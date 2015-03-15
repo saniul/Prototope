@@ -20,10 +20,10 @@ class ViewController: UIViewController {
 		Environment.currentEnvironment = Environment.defaultEnvironmentWithRootView(view)
 
 		// You might write a prototype in Swift...
-		//runSwiftPrototype()
+		runSwiftPrototype()
 
 		// ... or in JavaScript. (uncomment one; comment out the other)
-		runJSPrototope()
+//		runJSPrototope()
 	}
 
 	func runSwiftPrototype() {
@@ -34,7 +34,40 @@ class ViewController: UIViewController {
 
 	func makeRedLayer(name: String, y: Double) -> Layer {
 		let redLayer = Layer(parent: Layer.root, name: name)
-		redLayer.image = Image(name: "paint")
+        
+        let redImage = Image(name: "paint")
+        let pixels = redImage.toPixels()
+
+        let width = redImage.size.width
+        
+        var modified = pixels
+    
+        // White-out every pixel in even rows and columns
+        modified = modified.transform { row, column, pixel in
+            var newPixel = pixel
+            newPixel.red = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.red
+            newPixel.green = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.green
+            newPixel.blue = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.blue
+            return newPixel
+        }
+
+        // Make every tenth pixel blue
+        modified = modified.transform { idx, pixel in
+            var newPixel = pixel
+            newPixel.blue = idx % 10 == 0 ? 255 : pixel.blue
+            return newPixel
+        }
+        
+        // Invert all pixels
+        modified = modified.transform { (pixel: Pixel) -> Pixel in
+            var newPixel = pixel
+            newPixel.red = 255 - pixel.red
+            newPixel.green = 255 - pixel.green
+            newPixel.blue = 255 - pixel.blue
+            return newPixel
+        }
+        
+		redLayer.image = modified.toImage()
 		tunable(50, name: "x") { value in redLayer.frame.origin = Point(x: value, y: y) }
 		redLayer.backgroundColor = Color.red
 		redLayer.cornerRadius = 10
