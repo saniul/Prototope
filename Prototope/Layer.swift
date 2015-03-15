@@ -8,6 +8,8 @@
 
 import UIKit
 
+var layerCount = 0
+
 /**
 	Layers are the fundamental building block of Prototope.
 
@@ -31,6 +33,8 @@ public class Layer: Equatable, Hashable {
 
 	/** Creates a layer with an optional parent and name. */
 	public init(parent: Layer? = Layer.root, name: String? = nil, viewClass: UIView.Type? = nil) {
+        println("initializing Layer#\(layerCount++)")
+        
 		self.parent = parent ?? Layer.root
 		self.name = name
 
@@ -736,7 +740,7 @@ public class Layer: Equatable, Hashable {
     }
     
     deinit {
-        println("killed Layer")
+        println("killed Layer \(layerCount--)")
     }
 }
 
