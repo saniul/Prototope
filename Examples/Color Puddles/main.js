@@ -1,8 +1,7 @@
-//Layer.root.backgroundColor = new Color({hue: 0.5, saturation: 0.8, brightness: 0.3})
+Layer.root.backgroundColor = new Color({hue: 0.5, saturation: 0.8, brightness: 0.3})
 
 // TODO: you currently can't attach touch handlers to the root layer. oops.
 var touchLayer = new Layer()
-
 touchLayer.frame = Layer.root.bounds
 
 var touchesToLayers = {}
@@ -10,7 +9,6 @@ var touchLayers = []
 
 var z = 0
 touchLayer.touchBeganHandler = function(touchSequence) {
-//	console.log(touchSequence);
 //	var touchCircleLayer = new Layer()
 //	touchCircleLayer.position = touchSequence.currentSample.globalLocation
 //	touchCircleLayer.width = touchCircleLayer.height = 125
@@ -22,12 +20,12 @@ touchLayer.touchBeganHandler = function(touchSequence) {
 //	touchCircleLayer.userInteractionEnabled = false
 //	z += 1
 }
-//
-//touchLayer.touchMovedHandler = function(touchSequence) {
-//	touchesToLayers[touchSequence.id].position = touchSequence.currentSample.globalLocation
-//}
 
-//touchLayer.touchEndedHandler = touchLayer.touchCancelledHandler = function(touchSequence) {
+touchLayer.touchMovedHandler = function(touchSequence) {
+//	touchesToLayers[touchSequence.id].position = touchSequence.currentSample.globalLocation
+}
+
+touchLayer.touchEndedHandler = touchLayer.touchCancelledHandler = function(touchSequence) {
 //	var layer = touchesToLayers[touchSequence.id]
 //	delete touchesToLayers[touchSequence.id]
 //	delete touchLayers[touchLayers.indexOf(layer)]
@@ -38,11 +36,10 @@ touchLayer.touchBeganHandler = function(touchSequence) {
 //	layer.animators.scale.completionHandler = function () {
 //		layer.parent = undefined
 //	}
-//}
+}
 
-
-//new Heartbeat({handler: function() {
-//	for (var layer in touchLayers) {
-//		touchLayers[layer].scale *= 1.11
-//	}
-//}})
+new Heartbeat({handler: function() {
+	for (var layer in touchLayers) {
+		touchLayers[layer].scale *= 1.11
+	}
+}})
