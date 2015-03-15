@@ -38,7 +38,9 @@ touchLayer.touchEndedHandler = touchLayer.touchCancelledHandler = function(touch
 //	}
 }
 
+var i = 10;
 new Heartbeat({handler: function() {
+	console.log("heartbeat fired: " + i++);
 	for (var layer in touchLayers) {
 		touchLayers[layer].scale *= 1.11
 	}
