@@ -20,7 +20,9 @@ public class Context {
 		}
 	}
 
-	public var consoleLogHandler: (String -> Void)?
+    public var consoleLogHandler: (String -> Void)? = { str in
+        println(str)
+    }
 
 	private let vm = JSVirtualMachine()
 	private let context: JSContext
@@ -31,7 +33,7 @@ public class Context {
 	}
 
 	public func evaluateScript(script: String!) -> JSValue {
-		return context.evaluateScript(script)
+		return context.evaluateScript("\"use strict\";" + script)
 	}
 
 	private func addBridgedTypes() {
@@ -78,6 +80,8 @@ public class Context {
 		TextLayerBridge.addToContext(context)
 		SpeechBridge.addToContext(context)
 		TextAlignmentBridge.addToContext(context)
+		CameraLayerBridge.addToContext(context)
+		CameraPositionBridge.addToContext(context)
         DeviceAttitudeObserverBridge.addToContext(context)
 	}
 }

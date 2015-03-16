@@ -173,6 +173,13 @@ public class Layer: Equatable, Hashable {
 		set { layer.position.y = CGFloat(newValue) }
 	}
 
+    /** The position of the layer's origin point (the upper left-hand corner), 
+        relative to the origin of its parent layer and expressed in the parent coordinate space. */
+    public var origin: Point {
+        get { return Point(layer.frame.origin) }
+        set { layer.frame.origin = CGPoint(newValue) }
+    }
+
 	/** The position of the layer's anchor point (by default the center), relative to the
 		origin of its parent layer and expressed in the parent coordinate space.
 		Animatable. */
@@ -594,10 +601,19 @@ public class Layer: Equatable, Hashable {
 		}
 	}
 
-	init(wrappingView: UIView, name: String? = nil) {
+	private init(wrappingView: UIView, name: String? = nil) {
 		view = wrappingView
 		self.name = name
 	}
+    
+    
+	/** Creates a new layer hosted by the given view. The layer wraps its own view, which is sized to the full dimensions of the hosting view. */
+    convenience init(hostingView: UIView, name: String? = nil) {
+        self.init()
+        self.parentView = hostingView
+		self.frame = Rect(hostingView.bounds)
+		self.view.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+    }
 
 	// MARK: UIKit mapping
 
@@ -621,7 +637,7 @@ public class Layer: Equatable, Hashable {
 			super.init(frame: frame)
 		}
 
-		override convenience init() {
+		convenience init() {
 			self.init(frame: CGRect())
 		}
 
