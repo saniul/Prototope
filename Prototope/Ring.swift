@@ -56,6 +56,19 @@ public struct Ring<T> : SequenceType {
         count++
     }
     
+    public var valueToBeRemovedNext: T? {
+        if isFull {
+            let index = (count-storedCount) % capacity
+            return buffer[index]
+        }
+        return nil
+    }
+    
+    mutating public func reset() {
+        count = 0
+        buffer = []
+    }
+    
     public var isEmpty: Bool {
         return count == 0
     }
