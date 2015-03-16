@@ -12,6 +12,8 @@
 		752064901A89E3A0005E38A2 /* Behaviors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7520648F1A89E39F005E38A2 /* Behaviors.swift */; };
 		75239A611A9DBABA00FE8F04 /* DeviceMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75239A601A9DBABA00FE8F04 /* DeviceMotion.swift */; };
 		753E20E81A84A12100E30460 /* JSTest.js in Resources */ = {isa = PBXBuildFile; fileRef = 753E20E71A84A12100E30460 /* JSTest.js */; };
+		7565AAAC1AB6830F004C1543 /* RingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7565AA9D1AB682D9004C1543 /* RingTests.swift */; };
+		7565AAAE1AB6880F004C1543 /* Ring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7565AAAD1AB6880F004C1543 /* Ring.swift */; };
 		759508381AA175290089E32C /* DeviceAttitudeObserverBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759508371AA175290089E32C /* DeviceAttitudeObserverBridge.swift */; };
 		75A02AF01A8C95AC00938B4E /* BehaviorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */; };
 		9619D3AC1A8E56F20022DC54 /* Layer+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */; };
@@ -414,6 +416,8 @@
 		7520648F1A89E39F005E38A2 /* Behaviors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Behaviors.swift; sourceTree = "<group>"; };
 		75239A601A9DBABA00FE8F04 /* DeviceMotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMotion.swift; sourceTree = "<group>"; };
 		753E20E71A84A12100E30460 /* JSTest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = JSTest.js; sourceTree = "<group>"; };
+		7565AA9D1AB682D9004C1543 /* RingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RingTests.swift; sourceTree = "<group>"; };
+		7565AAAD1AB6880F004C1543 /* Ring.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ring.swift; sourceTree = "<group>"; };
 		759508371AA175290089E32C /* DeviceAttitudeObserverBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceAttitudeObserverBridge.swift; sourceTree = "<group>"; };
 		75A02AE11A8C94BE00938B4E /* BehaviorBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BehaviorBridge.swift; sourceTree = "<group>"; };
 		9619D3AB1A8E56F20022DC54 /* Layer+Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Layer+Layout.swift"; sourceTree = "<group>"; };
@@ -700,6 +704,7 @@
 				EBB565DC19F0774F00D93DE3 /* MathTests.swift */,
 				EBB565DE19F07A2900D93DE3 /* GeometryTests.swift */,
 				EB1C2A7519E4D1AB000DC2C1 /* PrototopeTests-Bridging-Header.h */,
+				7565AA9D1AB682D9004C1543 /* RingTests.swift */,
 			);
 			name = Tests;
 			path = PrototopeTests;
@@ -786,6 +791,7 @@
 				EBA837161A1DADDF00D23C9D /* Heartbeat.swift */,
 				EBA8371B1A1DB51000D23C9D /* Sound.swift */,
 				75239A601A9DBABA00FE8F04 /* DeviceMotion.swift */,
+				7565AAAD1AB6880F004C1543 /* Ring.swift */,
 				CD11D82A1A815AD3004F1197 /* Particle.swift */,
 				CD26ECCA1A83FECC00E8EC3B /* ParticleEmitter.swift */,
 				CD3F939F1A852AF500B964FC /* ParticlePreset.swift */,
@@ -1511,6 +1517,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB1C2A7719E4D1AC000DC2C1 /* ViewTests.swift in Sources */,
+				7565AAAC1AB6830F004C1543 /* RingTests.swift in Sources */,
 				EBB565DF19F07A2900D93DE3 /* GeometryTests.swift in Sources */,
 				EBB565DD19F0774F00D93DE3 /* MathTests.swift in Sources */,
 			);
@@ -1664,6 +1671,7 @@
 				752064901A89E3A0005E38A2 /* Behaviors.swift in Sources */,
 				EB04E5CB1A6606D100FD1EE3 /* KFTunableSpec.m in Sources */,
 				75239A611A9DBABA00FE8F04 /* DeviceMotion.swift in Sources */,
+				7565AAAE1AB6880F004C1543 /* Ring.swift in Sources */,
 				EB1C2A6519E4B534000DC2C1 /* Color.swift in Sources */,
 				EBF59A941A2E2B5000AB8C67 /* Shadow.swift in Sources */,
 				EBA837171A1DADDF00D23C9D /* Heartbeat.swift in Sources */,

@@ -9,6 +9,7 @@
 import Foundation
 import CoreMotion
 
+/** Represents a sample of the device's attitude at a point in time */
 public struct DeviceAttitudeSample {
     public let timestamp: TimeInterval
     
@@ -24,6 +25,15 @@ public struct DeviceAttitudeSample {
     }
 }
 
+/** When initialized, this class starts observing the device's attitude. It reports
+    the last N samples (`capacity` parameter in the constructor) through the `latestSamples`
+    property.
+
+    The `relativeToAnchor` parameter lets you specify that the values reported should
+    be relative to a reference frame (the position of the device when the observer is initialized).
+    You can reset the anchor using the `resetAnchor` method and the observer will use the next
+    detected value as the reference frame.
+*/
 public class DeviceAttitudeObserver {
     private let motionManager: CMMotionManager = CMMotionManager()
     
@@ -31,12 +41,17 @@ public class DeviceAttitudeObserver {
     
     private var sampleBuffer: Ring<DeviceAttitudeSample>
     
+    /** Most recent N attitude samples observed, reported in the order from most recent to least recent. */
     public var latestSamples: [DeviceAttitudeSample] { return reverse(lazy(sampleBuffer).array) }
     
     private let relativeToAnchor: Bool
     
-    public init(relativeToAnchor: Bool = true) {
-        self.sampleBuffer = Ring(capacity: 10)
+    /** The constructed observer will report the most recent `capacity` samples 
+    through the `latestSamples` property.
+    The `relativeToAnchor` parameter lets you specify that the values reported should
+    be relative to a reference frame (the position of the device when the observer is initialized). */
+    public init(relativeToAnchor: Bool = true, capacity: Int = 10) {
+        self.sampleBuffer = Ring(capacity: capacity)
         self.relativeToAnchor = relativeToAnchor
         
         motionManager.startDeviceMotionUpdatesUsingReferenceFrame(CMAttitudeReferenceFrame.XArbitraryCorrectedZVertical,
@@ -51,6 +66,8 @@ public class DeviceAttitudeObserver {
         }
     }
     
+    /** You can reset the anchor using the `resetAnchor` method and the observer will use the next
+    detected value as the reference frame. */
     public func resetAnchor() {
         self.anchor = nil
     }
@@ -60,7 +77,6 @@ public class DeviceAttitudeObserver {
     }
     
     func updateWithDeviceMotion(deviceMotion: CMDeviceMotion) {
-        
         if anchor == nil {
             updateAnchor()
         }
@@ -77,68 +93,8 @@ public class DeviceAttitudeObserver {
     func errorHandler(error: NSError) {
         if error.code == Int(CMErrorDeviceRequiresMovement.value) {
             motionManager.showsDeviceMovementDisplay = true
-        }
-    }
-}
-
-public struct RingGenerator<T> : GeneratorType {
-    private let buffer: [T]
-    private var idx: Int
-    private var remainingCount: Int
-    
-    public mutating func next() -> T? {
-        if remainingCount > 0 {
-            let value = buffer[idx % buffer.count]
-            remainingCount--
-            idx++
-            return value
-        }
-        return nil
-    }
-    
-    private init(_ ring: Ring<T>) {
-        buffer = ring.buffer
-        remainingCount = ring.storedCount
-        idx = (ring.count-remainingCount) % ring.capacity
-    }
-}
-
-
-public struct Ring<T> : SequenceType {
-    
-    private var buffer = [T]()
-    
-    public private(set) var count = 0
-    
-    public let capacity: Int
-    
-    public var storedCount: Int {
-        return min(count, capacity)
-    }
-    
-    public init(capacity: Int) {
-        assert(capacity > 0)
-        self.capacity = capacity
-    }
-    
-    mutating public func add(value: T) {
-        if self.isFull {
-            buffer[count % buffer.count] = value
         } else {
-            buffer.append(value)
+            Environment.currentEnvironment?.exceptionHandler("DeviceAttitudeObserver Error: \(error.description)")
         }
-        ++count
-    }
-    
-    public var isEmpty: Bool {
-        return count == 0
-    }
-    
-    public var isFull: Bool {
-        return count >= capacity
-    }
-    
-    public func generate() -> RingGenerator<T> {
-        return RingGenerator(self)
     }
 }
