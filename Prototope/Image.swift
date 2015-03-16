@@ -43,11 +43,22 @@ public struct Image {
 public struct PixelBitmap : MutableCollectionType {
     typealias Index = Int
     
+    var data: UnsafeMutablePointer<Pixel>
+    let width: Int
+    let height: Int
+    
+    public let startIndex: Int = 0
+    
+    public var endIndex: Int { return height * width }
+    
+    private let dataDestroyer: PixelDataDestroyer
+    
     init(image: Image) {
         width = Int(image.size.width)
         height = Int(image.size.height)
         
         data = UnsafeMutablePointer<Pixel>.alloc(width*height)
+        dataDestroyer = PixelDataDestroyer(data: data, width: width, height: height)
         
         let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedLast.rawValue)
@@ -57,14 +68,6 @@ public struct PixelBitmap : MutableCollectionType {
         
         CGContextDrawImage(context, CGRect(origin: CGPointZero, size: image.uiImage.size), image.uiImage.CGImage)
     }
-
-    var data: UnsafeMutablePointer<Pixel>
-    let width: Int
-    let height: Int
-    
-    public let startIndex: Int = 0
-    
-    public var endIndex: Int { return height * width }
     
     public subscript (position: Int) -> Pixel {
         get { return data[position] }
@@ -116,6 +119,22 @@ public struct PixelBitmap : MutableCollectionType {
         }
         
         return newBitmap
+    }
+    
+    private class PixelDataDestroyer {
+        let pixelDataToCleanUp: UnsafeMutablePointer<Pixel>
+        let width: Int
+        let height: Int
+        
+        init(data: UnsafeMutablePointer<Pixel>, width: Int, height: Int) {
+            self.pixelDataToCleanUp = data
+            self.width = width
+            self.height = height
+        }
+        
+        deinit {
+            pixelDataToCleanUp.dealloc(width*height)
+        }
     }
 }
 
