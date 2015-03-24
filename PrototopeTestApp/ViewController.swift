@@ -43,27 +43,27 @@ class ViewController: UIViewController {
         var modified = pixels
     
         // White-out every pixel in even rows and columns
-        modified = modified.transform { row, column, pixel in
+        modified = modified.map { row, column, pixel in
             var newPixel = pixel
-            newPixel.red = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.red
-            newPixel.green = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.green
-            newPixel.blue = (row % 2 == 0) || (column % 2 == 0) ? 255 : newPixel.blue
+            newPixel.red = (row % 2 == 0) || (column % 2 == 0) ? 1.0 : newPixel.red
+            newPixel.green = (row % 2 == 0) || (column % 2 == 0) ? 1.0 : newPixel.green
+            newPixel.blue = (row % 2 == 0) || (column % 2 == 0) ? 1.0 : newPixel.blue
             return newPixel
         }
 
-        // Make every tenth pixel blue
-        modified = modified.transform { idx, pixel in
+        // Make every 7th pixel blue
+        modified = modified.map { idx, pixel in
             var newPixel = pixel
-            newPixel.blue = idx % 10 == 0 ? 255 : pixel.blue
+            newPixel.blue = idx % 7 == 0 ? 1.0 : pixel.blue
             return newPixel
         }
         
         // Invert all pixels
-        modified = modified.transform { (pixel: Pixel) -> Pixel in
+        modified = modified.map { (pixel: Pixel) -> Pixel in
             var newPixel = pixel
-            newPixel.red = 255 - pixel.red
-            newPixel.green = 255 - pixel.green
-            newPixel.blue = 255 - pixel.blue
+            newPixel.red = 1.0 - pixel.red
+            newPixel.green = 1.0 - pixel.green
+            newPixel.blue = 1.0 - pixel.blue
             return newPixel
         }
         

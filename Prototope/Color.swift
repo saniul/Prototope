@@ -21,6 +21,11 @@ public struct Color {
 	public init(red: Double, green: Double, blue: Double, alpha: Double = 1.0) {
 		uiColor = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
 	}
+    
+    /** Constructs a color from RGB and alpha values. Arguments range from 0.0 to 1.0. */
+    public init(red: Float, green: Float, blue: Float, alpha: Float = 1.0) {
+        uiColor = UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
+    }
 
 	/** Constructs a grayscale color. Arguments range from 0.0 to 1.0.  */
 	public init(white: Double, alpha: Double = 1.0) {
@@ -54,7 +59,8 @@ public struct Color {
 		self.uiColor = uiColor
 	}
     
-    public func getRGBAValues() -> (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+    /** Returns the R, G, B and A values of the Color. */
+    public func getRGBAValues() -> (red: Float, green: Float, blue: Float, alpha: Float) {
         let colorSpace = CGColorGetColorSpace(self.uiColor.CGColor);
         let colorSpaceModel = CGColorSpaceGetModel(colorSpace);
         
@@ -78,7 +84,7 @@ public struct Color {
             fatalError("unsupported color space for color: \(self)")
         }
         
-        return (r, g, b, a)
+        return (Float(r), Float(g), Float(b), Float(a))
     }
 
 	public static var black: Color { return Color(UIColor.blackColor()) }

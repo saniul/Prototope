@@ -40,24 +40,31 @@ public struct Image {
     }
 }
 
+/** A representation of an image bitmap that allows pixel data access */
 public struct PixelBitmap : MutableCollectionType {
     typealias Index = Int
     
-    var data: UnsafeMutablePointer<Pixel>
-    let width: Int
-    let height: Int
+    public var pixelWidth: Int { return width }
+    public var pixelHeight: Int { return height }
+    
+    private let width: Int
+    private let height: Int
     
     public let startIndex: Int = 0
-    
     public var endIndex: Int { return height * width }
+    
+    private let scale: Double
+    
+    private var data: UnsafeMutablePointer<Pixel>
     
     private let dataDestroyer: PixelDataDestroyer
     
     init(image: Image) {
-        width = Int(image.size.width)
-        height = Int(image.size.height)
+        scale = Double(image.uiImage.scale)
+        width = Int(image.size.width * scale)
+        height = Int(image.size.height * scale)
         
-        data = UnsafeMutablePointer<Pixel>.alloc(width*height)
+        data = UnsafeMutablePointer<Pixel>.alloc(width * height)
         dataDestroyer = PixelDataDestroyer(data: data, width: width, height: height)
         
         let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -66,7 +73,8 @@ public struct PixelBitmap : MutableCollectionType {
         
         let context = CGBitmapContextCreate(data, width, height, 8, bytesPerRow, colorSpace, bitmapInfo)
         
-        CGContextDrawImage(context, CGRect(origin: CGPointZero, size: image.uiImage.size), image.uiImage.CGImage)
+        let cgImageSize = CGSize(width: CGFloat(width), height: CGFloat(height))
+        CGContextDrawImage(context, CGRect(origin: CGPointZero, size: cgImageSize), image.uiImage.CGImage)
     }
     
     public subscript (position: Int) -> Pixel {
@@ -74,25 +82,40 @@ public struct PixelBitmap : MutableCollectionType {
         set { data[position] = newValue }
     }
     
-    public func pixelAt(row: Int, column: Int) -> Pixel {
-        let idx = row * width + column
-        return self[idx]
+    public subscript (#row: Int, #column: Int) -> Pixel {
+        get {
+            let idx = indexOf(row: row, column: column)
+            return self[idx]
+        }
+        set {
+            let idx = indexOf(row: row, column: column)
+            self[idx] = newValue
+        }
+    }
+    
+    /** Returns the pixel data at a given row and column. */
+    public func pixelAt(#row: Int, column: Int) -> Pixel {
+        return self[row: row, column: column]
     }
     
     public func generate() -> IndexingGenerator<PixelBitmap> {
         return IndexingGenerator(self)
     }
     
+    /** Returns the Image representation of the PixelBitmap. */
     public func toImage() -> Image {
         let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(CGImageAlphaInfo.PremultipliedLast.rawValue)
         let context = CGBitmapContextCreate(data, width, height, 8, width * 4, colorSpace, bitmapInfo)
         let cgImage = CGBitmapContextCreateImage(context)
         
-        return Image(UIImage(CGImage: cgImage)!)
+        let image = UIImage(CGImage: cgImage, scale: CGFloat(scale), orientation: .Up)!
+        
+        return Image(image)
     }
     
-    public func transform(transform: Pixel -> Pixel) -> PixelBitmap {
+    /** Constructs a new PixelBitmap by applying the transform on each pixel the original. */
+    public func map(transform: Pixel -> Pixel) -> PixelBitmap {
         var newBitmap = self
         for idx in startIndex..<endIndex {
             newBitmap[idx] = transform(self[idx])
@@ -100,8 +123,9 @@ public struct PixelBitmap : MutableCollectionType {
         
         return newBitmap
     }
-    
-    public func transform(transform: (position: Int, Pixel) -> Pixel) -> PixelBitmap {
+
+    /** Constructs a new PixelBitmap by applying the transform on each pixel the original. */
+    public func map(transform: (position: Int, Pixel) -> Pixel) -> PixelBitmap {
         var newBitmap = self
         for idx in startIndex..<endIndex {
             newBitmap[idx] = transform(position: idx, self[idx])
@@ -110,7 +134,8 @@ public struct PixelBitmap : MutableCollectionType {
         return newBitmap
     }
     
-    public func transform(transform: (row: Int, column: Int, Pixel) -> Pixel) -> PixelBitmap {
+    /** Constructs a new PixelBitmap by applying the transform on each pixel the original. */
+    public func map(transform: (row: Int, column: Int, Pixel) -> Pixel) -> PixelBitmap {
         var newBitmap = self
         for idx in startIndex..<endIndex {
             let row = idx % width
@@ -119,6 +144,10 @@ public struct PixelBitmap : MutableCollectionType {
         }
         
         return newBitmap
+    }
+    
+    private func indexOf(#row: Int, column: Int) -> Int {
+        return row * width + column
     }
     
     private class PixelDataDestroyer {
@@ -141,19 +170,39 @@ public struct PixelBitmap : MutableCollectionType {
 
 /** A representation of a single pixel in an RGBA bitmap image. */
 public struct Pixel {
-    public var red: UInt8
-    public var green: UInt8
-    public var blue: UInt8
-    public var alpha: UInt8
+    private var redRaw: UInt8
+    private var greenRaw: UInt8
+    private var blueRaw: UInt8
+    private var alphaRaw: UInt8
+    
+    public var red: Float {
+        get { return Float(redRaw/255) }
+        set { self.redRaw = UInt8(newValue*255) }
+    }
+    
+    public var green: Float {
+        get { return Float(greenRaw/255) }
+        set { self.greenRaw = UInt8(newValue*255) }
+    }
+    
+    public var blue: Float {
+        get { return Float(blueRaw/255) }
+        set { self.blueRaw = UInt8(newValue*255) }
+    }
+    
+    public var alpha: Float {
+        get { return Float(alphaRaw/255) }
+        set { self.alphaRaw = UInt8(newValue*255) }
+    }
     
     public var color: Color {
-        get { return Color(red: Double(red/255), green: Double(green/255), blue: Double(blue/255), alpha: Double(alpha/255)) }
+        get { return Color(red: red, green: green, blue: blue, alpha: alpha) }
         set {
             let (r, g, b, a) = newValue.getRGBAValues()
-            self.red = UInt8(r*255)
-            self.green = UInt8(g*255)
-            self.blue = UInt8(b*255)
-            self.alpha = UInt8(a*255)
+            self.red = Float(r)
+            self.green = Float(g)
+            self.blue = Float(b)
+            self.alpha = Float(a)
         }
     }
 }
