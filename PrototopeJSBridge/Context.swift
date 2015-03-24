@@ -82,5 +82,7 @@ public class Context {
 		TextAlignmentBridge.addToContext(context)
 		CameraLayerBridge.addToContext(context)
 		CameraPositionBridge.addToContext(context)
+        PixelBitmapBridge.addToContext(context)
+        PixelBridge.addToContext(context)
 	}
 }
