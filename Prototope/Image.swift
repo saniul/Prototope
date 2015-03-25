@@ -209,9 +209,7 @@ public struct Pixel {
     
     public var green: Float {
         get { return Float(greenRaw)/255 }
-        set {
-            self.greenRaw = UInt8(min(1, max(0, newValue))*255)
-        }
+        set { self.greenRaw = UInt8(min(1, max(0, newValue))*255) }
     }
     
     public var blue: Float {
