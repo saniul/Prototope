@@ -78,8 +78,26 @@ public struct PixelBitmap : MutableCollectionType {
     }
     
     public subscript (position: Int) -> Pixel {
-        get { return data[position] }
-        set { data[position] = newValue }
+        get {
+            return data[position]
+        }
+        set {
+            data[position] = newValue
+        }
+    }
+    
+    /** Returns the pixel data at a given position. */
+    public func pixelAt(#position: Int) -> Pixel? {
+        if position < height * width {
+            return self[position]
+        } else {
+            return nil
+        }
+    }
+    
+    /** Sets the pixel data at a given position. */
+    public mutating func setPixelAt(#position: Int, value: Pixel) {
+        self[position] = value
     }
     
     public subscript (#row: Int, #column: Int) -> Pixel {
@@ -94,8 +112,17 @@ public struct PixelBitmap : MutableCollectionType {
     }
     
     /** Returns the pixel data at a given row and column. */
-    public func pixelAt(#row: Int, column: Int) -> Pixel {
-        return self[row: row, column: column]
+    public func pixelAt(#row: Int, column: Int) -> Pixel? {
+        if row < pixelHeight && column < pixelWidth {
+            return self[row: row, column: column]
+        } else {
+            return nil
+        }
+    }
+    
+    /** Sets the pixel data at a given row and column. */
+    public mutating func setPixelAt(#row: Int, column: Int, value: Pixel) {
+        self[row: row, column: column] = value
     }
     
     public func generate() -> IndexingGenerator<PixelBitmap> {
@@ -176,23 +203,25 @@ public struct Pixel {
     private var alphaRaw: UInt8
     
     public var red: Float {
-        get { return Float(redRaw/255) }
-        set { self.redRaw = UInt8(newValue*255) }
+        get { return Float(redRaw)/255 }
+        set { self.redRaw = UInt8(min(1, max(0, newValue))*255) }
     }
     
     public var green: Float {
-        get { return Float(greenRaw/255) }
-        set { self.greenRaw = UInt8(newValue*255) }
+        get { return Float(greenRaw)/255 }
+        set {
+            self.greenRaw = UInt8(min(1, max(0, newValue))*255)
+        }
     }
     
     public var blue: Float {
-        get { return Float(blueRaw/255) }
-        set { self.blueRaw = UInt8(newValue*255) }
+        get { return Float(blueRaw)/255 }
+        set { self.blueRaw = UInt8(min(1, max(0, newValue))*255) }
     }
     
     public var alpha: Float {
-        get { return Float(alphaRaw/255) }
-        set { self.alphaRaw = UInt8(newValue*255) }
+        get { return Float(alphaRaw)/255 }
+        set { self.alphaRaw = UInt8(min(1, max(0, newValue))*255) }
     }
     
     public var color: Color {
