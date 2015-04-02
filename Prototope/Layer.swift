@@ -373,6 +373,28 @@ public class Layer: Equatable, Hashable {
 			layer.masksToBounds = self._shouldMaskToBounds()
 		}
 	}
+    
+    /** The mask layer is used to clip or filter the contents of a layer. Those contents will be
+        rendered only where the mask layer's contents are opaque. Partially transparent regions
+        of the mask layer will result in partially transparent renderings of the host layer.
+
+        The mask layer operates within the coordinate space of its host layer. In most cases,
+        you'll want to set a mask layer's frame to be equal to its host's bounds.
+
+        Be aware: mask layers do incur an additional performance cost. If the cost becomes too
+        onerous, consider making flattened images of the masked content instead. */
+    public var maskLayer: Layer? {
+        willSet {
+            newValue?.parent = nil
+            newValue?.maskedLayer?.maskLayer = nil
+        }
+        didSet {
+            view.maskView = maskLayer?.view
+            maskLayer?.maskedLayer = self
+        }
+    }
+    
+    private weak var maskedLayer: Layer?
 
     // MARK: Touches and gestures
 
@@ -568,7 +590,7 @@ public class Layer: Equatable, Hashable {
 				}
 				// in this case unless you have a complex hierarchy,
 				// you should probably use a rounded image.
-				fatalError("⚠️ \(prefix) can't have images, shadows and corner radii set all at the same time. 😣")
+				Environment.currentEnvironment?.exceptionHandler("\(prefix) can't have images, shadows and corner radii set all at the same time. 😣")
 			}
 
 			// don't set masksToBounds unless you have an image and a corner radius
