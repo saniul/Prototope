@@ -95,6 +95,11 @@ import JavaScriptCore
     func setPixelAt(args: NSDictionary)
     
     func map(args: JSValue) -> PixelBitmapJSExport
+
+    func colorAt(position: Int) -> JSValue
+    func colorAt(row: Int, _ column: Int) -> JSValue
+    func setColorAt(position: Int, _ red: Int, _ green: Int, _ blue: Int)
+    func setColorAt(row: Int, _ column: Int, _ red: Int, _ green: Int, _ blue: Int)
 }
 
 @objc public class PixelBitmapBridge: NSObject, PixelBitmapJSExport, BridgeType {
@@ -120,6 +125,26 @@ import JavaScriptCore
     public func toImage() -> ImageJSExport {
         let image = pixelBitmap.toImage()
         return ImageBridge(image)
+    }
+
+    public func setColorAt(position: Int, _ red: Int, _ green: Int, _ blue: Int) {
+        let pixel = Pixel(red, green, blue, Int(self.pixelBitmap[position].alphaRaw))
+        self.pixelBitmap.setPixelAt(position: position, value: pixel)
+    }
+    
+    public func setColorAt(row: Int, _ column: Int, _ red: Int, _ green: Int, _ blue: Int) {
+        let pixel = Pixel(red, green, blue, Int(self.pixelBitmap[row: row, column: column].alphaRaw))
+        self.pixelBitmap.setPixelAt(row: row, column: column, value: pixel)
+    }
+
+    public func colorAt(position: Int) -> JSValue {
+        let pixel = self.pixelBitmap.pixelAt(position: position)!
+        return JSValue(object: [Int(pixel.redRaw), Int(pixel.greenRaw), Int(pixel.blueRaw)], inContext: JSContext.currentContext())
+    }
+    
+    public func colorAt(row: Int, _ column: Int) -> JSValue {
+        let pixel = self.pixelBitmap.pixelAt(row: row, column: row)!
+        return JSValue(object: [Int(pixel.redRaw), Int(pixel.greenRaw), Int(pixel.blueRaw)], inContext: JSContext.currentContext())
     }
     
     public func pixelAt(args: NSDictionary) -> PixelJSExport? {
