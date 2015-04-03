@@ -13,12 +13,19 @@ import JavaScriptCore
 @objc public protocol ImageJSExport: JSExport {
 	init?(args: NSDictionary)
     
+//    var pixels: JSValue? { get set }
+    
     func toPixels() -> PixelBitmapJSExport
+    func loadPixels()
+    func updatePixels()
 }
 
 @objc public class ImageBridge: NSObject, ImageJSExport, BridgeType {
 	var image: Image!
-
+    
+//    public var pixels: JSValue?
+    private var loadedBitmap: PixelBitmap?
+    
 	public class func addToContext(context: JSContext) {
 		context.setObject(self, forKeyedSubscript: "Image")
 	}
@@ -41,6 +48,40 @@ import JavaScriptCore
     public func toPixels() -> PixelBitmapJSExport {
         let pixelBitmap = image.toPixels()
         return PixelBitmapBridge(pixelBitmap)
+    }
+    
+    public func loadPixels() {
+        loadPixelsArr()
+    }
+    
+    public func loadPixelsArr() {
+        let pixelBitmap = image.toPixels()
+        loadedBitmap = pixelBitmap
+        
+        var array = [[Int]]()
+        array.reserveCapacity(pixelBitmap.endIndex)
+        
+        for pixel in pixelBitmap {
+            array.append([Int(pixel.redRaw), Int(pixel.greenRaw), Int(pixel.blueRaw)])
+        }
+        
+        println("started")
+        let before = CACurrentMediaTime()
+        let jsPixels = JSValue(object: array, inContext: JSContext.currentContext())
+        JSContext.currentThis().setObject(jsPixels, forKeyedSubscript: "pixels")
+        let after = CACurrentMediaTime()
+        println("took \(after-before)s")
+        
+    }
+    
+    public func updatePixels() {
+        let bridgedArray = JSContext.currentThis().objectForKeyedSubscript("pixels")!.toArray()!
+        var idx = 0
+        for pixelArray in bridgedArray {
+            loadedBitmap![idx] = Pixel(pixelArray[0] as! Int, pixelArray[1] as! Int, pixelArray[2] as! Int, Int(loadedBitmap![idx].alphaRaw))
+            idx++
+        }
+        self.image = loadedBitmap?.toImage()
     }
 }
 

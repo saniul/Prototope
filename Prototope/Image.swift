@@ -55,7 +55,7 @@ public struct PixelBitmap : MutableCollectionType {
     
     private let scale: Double
     
-    private var data: UnsafeMutablePointer<Pixel>
+    public var data: UnsafeMutablePointer<Pixel>
     
     private let dataDestroyer: PixelDataDestroyer
     
@@ -197,10 +197,24 @@ public struct PixelBitmap : MutableCollectionType {
 
 /** A representation of a single pixel in an RGBA bitmap image. */
 public struct Pixel {
-    private var redRaw: UInt8
-    private var greenRaw: UInt8
-    private var blueRaw: UInt8
-    private var alphaRaw: UInt8
+    public var redRaw: UInt8
+    public var greenRaw: UInt8
+    public var blueRaw: UInt8
+    public var alphaRaw: UInt8
+    
+    public init(_ redRaw: Int, _ greenRaw: Int, _ blueRaw: Int, _ alphaRaw: Int) {
+        self.redRaw = UInt8(redRaw)
+        self.greenRaw = UInt8(greenRaw)
+        self.blueRaw = UInt8(blueRaw)
+        self.alphaRaw = UInt8(alphaRaw)
+    }
+    
+    public init(_ red: Float, _ green: Float, _ blue: Float, _ alpha: Float) {
+        self.redRaw = UInt8(min(1, max(0, red))*255)
+        self.greenRaw = UInt8(min(1, max(0, green))*255)
+        self.blueRaw = UInt8(min(1, max(0, blue))*255)
+        self.alphaRaw = UInt8(min(1, max(0, alpha))*255)
+    }
     
     public var red: Float {
         get { return Float(redRaw)/255 }
