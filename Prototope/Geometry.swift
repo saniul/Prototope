@@ -35,6 +35,18 @@ public struct Point: Equatable {
 		let dy = point.y - self.y
 		return sqrt(dx*dx + dy*dy)
 	}
+	
+	
+	/** Computes the slope between this point and the given point. Returns nil for infinite slopes (i.e., when the x values are the same). */
+	public func slopeToPoint(point: Point) -> Double? {
+		let dx = point.x - self.x
+		let dy = point.y - self.y
+		
+		if dx == 0 {
+			return nil
+		}
+		return dy/dx
+	}
 
 	/** Computes the magnitude of the point, interpreted as a vector. */
 	public var length: Double {
@@ -78,6 +90,12 @@ public func *(a: Point, scalar: Double) -> Point {
 }
 public func *(scalar: Double, a: Point) -> Point {
     return a * scalar
+}
+
+
+/** Element-wise multiplication. */
+public func *(a: Point, b: Point) -> Point {
+	return Point(x: a.x * b.x, y: a.y * b.y)
 }
 
 /** Multiplies both point dimensions by scalar. */
@@ -158,6 +176,12 @@ extension CGSize {
 	}
 }
 
+extension Size: Printable {
+	public var description: String {
+		return "{width: \(width), height: \(height)}"
+	}
+}
+
 
 // MARK: - Rect
 
@@ -208,6 +232,33 @@ public struct Rect: Equatable {
 		size = Size(rect.size)
 	}
     
+    /** Returns a Rect constructed by insetting the receiver. */
+    public func inset(top: Double = 0, right: Double = 0, bottom: Double = 0, left: Double = 0) -> Rect {
+        if top + bottom > size.height {
+            Environment.currentEnvironment?.exceptionHandler("Trying to inset \(self) with vertical insets (\(top),\(bottom)) greater than the height")
+        } else if left + right > size.width {
+            Environment.currentEnvironment?.exceptionHandler("Trying to inset \(self) with horizontal insets (\(left),\(right)) greater than the width")
+        }
+        
+        var newRect = self
+        newRect.origin.x += left
+        newRect.size.width -= left + right
+        newRect.origin.y += top
+        newRect.size.height -= top + bottom
+        
+        return newRect
+    }
+    
+    /** Convenience function. Returns a Rect constructed by insetting the receiver. */
+    public func inset(vertical: Double = 0, horizontal: Double = 0) -> Rect {
+        return inset(top: vertical, right: horizontal, bottom: vertical, left: horizontal)
+    }
+    
+    /** Convenience function. Returns a Rect constructed by insetting the receiver. */
+    public func inset(value: Double = 0) -> Rect {
+        return inset(top: value, right: value, bottom: value, left: value)
+    }
+    
     /** Determines whether this rectangle contains the specified point. */
     public func contains(point: Point) -> Bool {
         let r = CGRect(self)
@@ -225,5 +276,12 @@ extension CGRect {
 	public init(_ rect: Rect) {
 		self.origin = CGPoint(rect.origin)
 		self.size = CGSize(rect.size)
+	}
+}
+
+
+extension Rect: Printable {
+	public var description: String {
+		return "{origin: \(origin), size: \(size)}"
 	}
 }

@@ -19,6 +19,7 @@ import Prototope
 	static var zero: PointJSExport { get } // exported manually
 	init(args: NSDictionary) 
 	func distanceToPoint(point: PointJSExport) -> Double
+	func slopeToPoint(point: PointJSExport) -> JSValue
 	var length: Double { get }
 
 	func equals(point: PointJSExport) -> Bool
@@ -48,6 +49,10 @@ import Prototope
 		self.point = point
 		super.init()
 	}
+	
+	public override var description: String {
+		return self.point.description
+	}
 
 	public var x: Double { return point.x }
 	public var y: Double { return point.y }
@@ -56,6 +61,13 @@ import Prototope
 
 	public func distanceToPoint(other: PointJSExport) -> Double {
 		return point.distanceToPoint((other as JSExport as! PointBridge).point)
+	}
+	
+	
+	public func slopeToPoint(point: PointJSExport) -> JSValue {
+		let slope = self.point.slopeToPoint((point as JSExport as! PointBridge).point)
+		let context = JSContext.currentContext()
+		return slope != nil ? JSValue(double: slope!, inContext: context) : JSValue(undefinedInContext: context)
 	}
 
 	public var length: Double { return point.length }
@@ -116,6 +128,11 @@ import Prototope
 		self.size = size
 		super.init()
 	}
+	
+	
+	public override var description: String {
+		return size.description
+	}
 
 	public var width: Double { return size.width }
 	public var height: Double { return size.height }
@@ -147,6 +164,7 @@ import Prototope
 	var center: PointJSExport { get }
 	static var zero: RectJSExport { get }
 	init(args: NSDictionary)
+    func inset(args: NSDictionary) -> RectJSExport
 }
 
 @objc public class RectBridge: NSObject, RectJSExport, BridgeType {
@@ -173,6 +191,38 @@ import Prototope
 		self.rect = rect
 		super.init()
 	}
+	
+	
+	public override var description: String {
+		return rect.description
+	}
+    
+    public func inset(args: NSDictionary) -> RectJSExport {
+        let hasKey = { (key: String) -> Bool in
+            return (args.objectForKey(key) as? Double) != nil
+        }
+        let getValue = { (key: String) -> Double in
+            return (args.objectForKey(key) as! Double?) ?? 0
+        }
+        
+        let justValue = hasKey("value")
+        let simplified = hasKey("vertical") || hasKey("horizontal")
+        let core = hasKey("top") || hasKey("right") || hasKey("bottom") || hasKey("left")
+        
+        // This switch statement guarantees that only one of the three possible sets
+        // of arguments was passed in.
+        switch (justValue, simplified, core) {
+        case (true, false, false): // "value"
+            return RectBridge(rect.inset(value: getValue("value")))
+        case (false, true, false): // "vertical", "horizontal"
+            return RectBridge(rect.inset(vertical: getValue("vertical"), horizontal: getValue("horizontal")))
+        case (false, false, true): // "top", "right", "bottom" "left"
+            return RectBridge(rect.inset(top: getValue("top"), right: getValue("right"), bottom: getValue("bottom"), left: getValue("left")))
+        default:
+            Environment.currentEnvironment?.exceptionHandler("Trying to call inset on with invalid parameters: \(args)")
+            return self
+        }
+    }
 
 	public var origin: PointJSExport { return PointBridge(rect.origin) }
 	public var size: SizeJSExport { return SizeBridge(rect.size) }
